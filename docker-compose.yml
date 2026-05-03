@@ -1,0 +1,18 @@
+services:
+    directus:
+      image: directus/directus:latest
+      ports:
+        - "8055:8055"
+      environment:
+        SECRET: "latronspem-fiestalok"
+        DB_CLIENT: "sqlite3"
+        DB_FILENAME: "/directus/database/data.db"
+        ADMIN_EMAIL: "contact@fiestalok.fr"
+        ADMIN_PASSWORD: "fiestalok2sxb!"
+        CORS_ENABLED: "true"
+        CORS_ORIGIN: "https://fiestalok.fr,http://localhost:5174"
+        PUBLIC_URL: "https://back.fiestalok.fr"  # URL où sera accessible Directus
+      volumes:
+        - ./uploads:/directus/uploads
+        - ./extensions:/directus/extensions
+        - ./database:/directus/database
