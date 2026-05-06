@@ -16,3 +16,4 @@ services:
         - ./uploads:/directus/uploads
         - ./extensions:/directus/extensions
         - ./database:/directus/database
+        - ./snapshots:/directus/snapshots
