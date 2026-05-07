@@ -1,0 +1,3 @@
+back.fiestalok.fr {
+    reverse_proxy directus:8055
+}
