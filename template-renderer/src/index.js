@@ -230,29 +230,24 @@ app.post('/generate-pdf', async (req, res) => {
 
   const clientName = `${client.first_name} ${client.last_name}`;
 
-  try {
-    await transporter.sendMail({
+  const [clientResult, adminResult] = await Promise.allSettled([
+    transporter.sendMail({
       from: SMTP_FROM,
       to: client.email,
       subject: `Votre devis FiestaLok #${reservation.id}`,
       text: `Bonjour ${clientName},\n\nVeuillez trouver en pièce jointe votre devis FiestaLok #${reservation.id}.\n\nCordialement,\nL'équipe FiestaLok`,
       attachments: [{ filename: `devis-${reservation.id}.pdf`, content: pdfBytes, contentType: 'application/pdf' }],
-    });
-  } catch (err) {
-    console.error('Client email failed:', err.message);
-  }
-
-  try {
-    await transporter.sendMail({
+    }),
+    transporter.sendMail({
       from: SMTP_FROM,
       to: ADMIN_EMAIL,
       subject: `Nouveau devis envoyé — #${reservation.id} (${clientName})`,
       text: `Un devis a été envoyé au client.\n\nRéservation #${reservation.id}\nClient : ${clientName} (${client.email}, ${client.phone})\nPériode : ${formatDate(reservation.date_start)} → ${formatDate(reservation.date_end)}\nTotal : ${reservation.total_price} €`,
       attachments: [{ filename: `devis-${reservation.id}.pdf`, content: pdfBytes, contentType: 'application/pdf' }],
-    });
-  } catch (err) {
-    console.error('Admin email failed:', err.message);
-  }
+    }),
+  ]);
+  if (clientResult.status === 'rejected') console.error('Client email failed:', clientResult.reason.message);
+  if (adminResult.status === 'rejected') console.error('Admin email failed:', adminResult.reason.message);
 
   return res.json({ file_id: fileData.data.id });
 });
