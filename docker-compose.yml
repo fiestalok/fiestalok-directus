@@ -38,6 +38,7 @@ services:
       - SMTP_USER=${SMTP_USER}
       - SMTP_PASS=${SMTP_PASS}
       - SMTP_FROM=${SMTP_FROM}
+      - MAIL_REDIRECT_TO=${MAIL_REDIRECT_TO}
     volumes:
       - ./template-renderer/templates:/app/templates
     restart: unless-stopped
