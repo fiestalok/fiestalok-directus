@@ -92,8 +92,8 @@ const TEMPLATES_DIR = process.env.TEMPLATES_DIR || path.join(__dirname, '..', 't
 const TOKEN_TTL_MS = 5 * 60 * 1000;
 const PORT = process.env.PORT || 3001;
 const SERVICE_URL = process.env.SERVICE_URL || `http://template-renderer:${PORT}`;
-const GOTENBERG_URL = process.env.GOTENBERG_URL || 'http://gotenberg:3000';
-const DIRECTUS_URL = process.env.DIRECTUS_URL || 'http://directus:8055';
+const GOTENBERG_URL = process.env.GOTENBERG_URL;
+const DIRECTUS_URL = process.env.DIRECTUS_URL;
 const DIRECTUS_TOKEN = process.env.DIRECTUS_TOKEN;
 
 const tokens = new Map();
@@ -348,10 +348,13 @@ Avant de modifier les fichiers, tu dois créer un token statique dans Directus :
 2. Crée un token pour un utilisateur admin (ou un utilisateur avec accès en écriture aux fichiers)
 3. Copie le token généré — tu en auras besoin pour `DIRECTUS_TOKEN`
 
-- [ ] **Step 1 : Ajouter `DIRECTUS_TOKEN` dans `.env`**
+- [ ] **Step 1 : Mettre à jour `.env`**
 
-Ajoute cette ligne dans `.env` (avec la valeur du token créé dans Directus) :
+Ajoute ces trois lignes dans `.env`. `GOTENBERG_URL` et `DIRECTUS_URL` utilisent les noms de services Docker (identiques en dev et en prod) :
+
 ```
+GOTENBERG_URL=http://gotenberg:3000
+DIRECTUS_URL=http://directus:8055
 DIRECTUS_TOKEN=<colle-ici-le-token-directus>
 ```
 
