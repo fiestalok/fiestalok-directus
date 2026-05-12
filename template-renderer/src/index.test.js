@@ -119,3 +119,26 @@ describe('GET /render/:token', () => {
     expect(getRes.text).toContain('150 €');
   });
 });
+
+describe('POST /generate-pdf', () => {
+  test('retourne 401 sans header X-API-Key', async () => {
+    const res = await request(app).post('/generate-pdf').send({ reservation: {} });
+    expect(res.status).toBe(401);
+  });
+
+  test('retourne 401 avec une clé incorrecte', async () => {
+    const res = await request(app)
+      .post('/generate-pdf')
+      .set('X-API-Key', 'mauvaise-cle')
+      .send({ reservation: {} });
+    expect(res.status).toBe(401);
+  });
+
+  test('retourne 400 quand reservation est absent', async () => {
+    const res = await request(app)
+      .post('/generate-pdf')
+      .set('X-API-Key', VALID_KEY)
+      .send({});
+    expect(res.status).toBe(400);
+  });
+});
