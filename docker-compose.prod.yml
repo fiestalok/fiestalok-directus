@@ -43,6 +43,11 @@ services:
       - GOTENBERG_URL=http://gotenberg:3000
       - DIRECTUS_URL=http://directus:8055
       - DIRECTUS_TOKEN=${DIRECTUS_TOKEN}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - SMTP_FROM=${SMTP_FROM}
     volumes:
       - ./template-renderer/templates:/app/templates
     restart: unless-stopped
