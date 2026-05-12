@@ -32,13 +32,22 @@ app.post('/render', (req, res) => {
     return res.status(400).json({ error: 'templateId and variables are required' });
   }
 
-  const templatePath = path.join(TEMPLATES_DIR, `${templateId}.html`);
+  const resolvedTemplatesDir = path.resolve(TEMPLATES_DIR);
+  const templatePath = path.resolve(TEMPLATES_DIR, `${templateId}.html`);
+  if (!templatePath.startsWith(resolvedTemplatesDir + path.sep)) {
+    return res.status(400).json({ error: 'Invalid templateId' });
+  }
   if (!fs.existsSync(templatePath)) {
     return res.status(404).json({ error: `Template "${templateId}" not found` });
   }
 
-  const source = fs.readFileSync(templatePath, 'utf-8');
-  const html = Handlebars.compile(source)(variables);
+  let html;
+  try {
+    const source = fs.readFileSync(templatePath, 'utf-8');
+    html = Handlebars.compile(source)(variables);
+  } catch (err) {
+    return res.status(500).json({ error: 'Template rendering failed' });
+  }
 
   const id = uuidv4();
   tokens.set(id, { html, expiresAt: Date.now() + TOKEN_TTL_MS });
