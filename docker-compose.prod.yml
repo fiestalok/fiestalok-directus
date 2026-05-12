@@ -35,6 +35,14 @@ services:
     image: gotenberg/gotenberg:8
     restart: unless-stopped
 
+  template-renderer:
+    build: ./template-renderer
+    environment:
+      - RENDERER_API_KEY=${RENDERER_API_KEY}
+    volumes:
+      - ./template-renderer/templates:/app/templates
+    restart: unless-stopped
+
 volumes:
   caddy_data:
   caddy_config:
