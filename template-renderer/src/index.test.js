@@ -267,4 +267,26 @@ describe('POST /generate-pdf', () => {
     expect(res.status).toBe(200);
     expect(res.body.file_id).toBe('file-456');
   });
+
+  test('MAIL_REDIRECT_TO redirige tous les emails vers ladresse de test avec préfixe TEST -', async () => {
+    process.env.MAIL_REDIRECT_TO = 'redirect@test.com';
+    mockHttpSequence([
+      { statusCode: 200, body: Buffer.from('fake-pdf-bytes') },
+      { statusCode: 200, body: { data: { id: 'file-789' } } },
+    ]);
+
+    const res = await request(app)
+      .post('/generate-pdf')
+      .set('X-API-Key', VALID_KEY)
+      .send({ reservation: VALID_RESERVATION });
+
+    expect(res.status).toBe(200);
+    expect(mockSendMail).toHaveBeenCalledTimes(2);
+    for (const [opts] of mockSendMail.mock.calls) {
+      expect(opts.to).toBe('redirect@test.com');
+      expect(opts.subject).toMatch(/^TEST - /);
+    }
+
+    delete process.env.MAIL_REDIRECT_TO;
+  });
 });

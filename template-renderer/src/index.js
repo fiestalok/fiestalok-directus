@@ -35,6 +35,22 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+function createMailer(transport) {
+  return {
+    sendMail(options) {
+      const redirectTo = process.env.MAIL_REDIRECT_TO;
+      if (!redirectTo) return transport.sendMail(options);
+      return transport.sendMail({
+        ...options,
+        to: redirectTo,
+        subject: `TEST - ${options.subject}`,
+      });
+    },
+  };
+}
+
+const mailer = createMailer(transporter);
+
 const tokens = new Map();
 
 setInterval(() => {
@@ -231,14 +247,14 @@ app.post('/generate-pdf', async (req, res) => {
   const clientName = `${client.first_name} ${client.last_name}`;
 
   const [clientResult, adminResult] = await Promise.allSettled([
-    transporter.sendMail({
+    mailer.sendMail({
       from: SMTP_FROM,
       to: client.email,
       subject: `Votre devis FiestaLok #${reservation.id}`,
       text: `Bonjour ${clientName},\n\nVeuillez trouver en pièce jointe votre devis FiestaLok #${reservation.id}.\n\nCordialement,\nL'équipe FiestaLok`,
       attachments: [{ filename: `devis-${reservation.id}.pdf`, content: pdfBytes, contentType: 'application/pdf' }],
     }),
-    transporter.sendMail({
+    mailer.sendMail({
       from: SMTP_FROM,
       to: ADMIN_EMAIL,
       subject: `Nouveau devis envoyé — #${reservation.id} (${clientName})`,
