@@ -127,6 +127,9 @@ app.post('/generate-pdf', async (req, res) => {
   if (!reservation) {
     return res.status(400).json({ error: 'reservation is required' });
   }
+  if (!reservation.client) {
+    return res.status(400).json({ error: 'reservation.client is required' });
+  }
 
   const client = reservation.client;
   const formatDate = (d) => (d ? new Date(d).toLocaleDateString('fr-FR') : '');
