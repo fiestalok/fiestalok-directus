@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
+const nodemailer = require('nodemailer');
 
 const app = express();
 app.use(express.json());
@@ -16,6 +17,23 @@ const SERVICE_URL = process.env.SERVICE_URL || `http://template-renderer:${PORT}
 const GOTENBERG_URL = process.env.GOTENBERG_URL;
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
 const DIRECTUS_TOKEN = process.env.DIRECTUS_TOKEN;
+
+const SMTP_HOST = process.env.SMTP_HOST;
+const SMTP_PORT = Number(process.env.SMTP_PORT);
+const SMTP_USER = process.env.SMTP_USER;
+const SMTP_PASS = process.env.SMTP_PASS;
+const SMTP_FROM = process.env.SMTP_FROM;
+const ADMIN_EMAIL = 'contact@fiestalok.fr';
+
+const transporter = nodemailer.createTransport({
+  host: SMTP_HOST,
+  port: SMTP_PORT,
+  secure: true,
+  auth: {
+    user: SMTP_USER,
+    pass: SMTP_PASS,
+  },
+});
 
 const tokens = new Map();
 
@@ -208,6 +226,32 @@ app.post('/generate-pdf', async (req, res) => {
     fileData = await uploadRes.json();
   } catch (err) {
     return res.status(502).json({ error: `Directus upload failed: ${err.message}` });
+  }
+
+  const clientName = `${client.first_name} ${client.last_name}`;
+
+  try {
+    await transporter.sendMail({
+      from: SMTP_FROM,
+      to: client.email,
+      subject: `Votre devis FiestaLok #${reservation.id}`,
+      text: `Bonjour ${clientName},\n\nVeuillez trouver en pièce jointe votre devis FiestaLok #${reservation.id}.\n\nCordialement,\nL'équipe FiestaLok`,
+      attachments: [{ filename: `devis-${reservation.id}.pdf`, content: pdfBytes }],
+    });
+  } catch (err) {
+    console.error('Client email failed:', err.message);
+  }
+
+  try {
+    await transporter.sendMail({
+      from: SMTP_FROM,
+      to: ADMIN_EMAIL,
+      subject: `Nouveau devis envoyé — #${reservation.id} (${clientName})`,
+      text: `Un devis a été envoyé au client.\n\nRéservation #${reservation.id}\nClient : ${clientName} (${client.email}, ${client.phone})\nPériode : ${formatDate(reservation.date_start)} → ${formatDate(reservation.date_end)}\nTotal : ${reservation.total_price} €`,
+      attachments: [{ filename: `devis-${reservation.id}.pdf`, content: pdfBytes }],
+    });
+  } catch (err) {
+    console.error('Admin email failed:', err.message);
   }
 
   return res.json({ file_id: fileData.data.id });
