@@ -39,11 +39,11 @@ npm install nodemailer
 Nouvelles variables d'environnement à ajouter dans `.env` et `docker-compose.yml` :
 
 ```env
-SMTP_HOST=ssl0.ovh.net
+SMTP_HOST=smtp.hostinger.com
 SMTP_PORT=465
 SMTP_USER=contact@fiestalok.fr
-SMTP_PASS=<mot de passe OVH>
-SMTP_FROM=FiestaLok <contact@fiestalok.fr>
+SMTP_PASS=%*MSU5kaQ*DzU*
+SMTP_FROM=FiestaloK <contact@fiestalok.fr>
 ```
 
 Le transporter nodemailer est créé au démarrage du service (connexion SMTP réutilisée).
@@ -66,7 +66,11 @@ const transporter = nodemailer.createTransport({
 
 | Champ | Valeur |
 |---|---|
-| `from` | `SMTP_FROM` (ex: `FiestaLok <contact@fiestalok.fr>`) |
+### Email client
+
+| Champ | Valeur |
+|---|---|
+| `from` | `SMTP_FROM` (ex: `FiestaloK <contact@fiestalok.fr>`) |
 | `to` | `reservation.client.email` |
 | `subject` | `Votre devis FiestaLok #<id>` |
 | `text` | Court message de confirmation (voir ci-dessous) |
@@ -82,6 +86,29 @@ Veuillez trouver en pièce jointe votre devis FiestaLok #<id>.
 Cordialement,
 L'équipe FiestaLok
 ```
+
+### Email admin (confirmation interne)
+
+| Champ | Valeur |
+|---|---|
+| `from` | `SMTP_FROM` |
+| `to` | `contact@fiestalok.fr` |
+| `subject` | `Nouveau devis envoyé — #<id> (<client_name>)` |
+| `text` | Récap de la réservation (voir ci-dessous) |
+| `attachments` | `[{ filename: 'devis-<id>.pdf', content: pdfBytes }]` |
+
+Corps du message admin (text) :
+
+```
+Un devis a été envoyé au client.
+
+Réservation #<id>
+Client : <client_name> (<client_email>, <client_phone>)
+Période : <date_start> → <date_end>
+Total : <total_price> €
+```
+
+Les deux emails sont envoyés dans le même bloc `try/catch` best-effort — si l'un échoue, l'autre est quand même tenté.
 
 ---
 
@@ -122,7 +149,7 @@ return res.json({ file_id: fileData.data.id });
 
 ## Tests
 
-- Nouveau test unitaire : `POST /generate-pdf` avec nodemailer mocké — vérifie que `sendMail` est appelé avec les bons paramètres (to, subject, attachment filename)
+- Nouveau test unitaire : `POST /generate-pdf` avec nodemailer mocké — vérifie que `sendMail` est appelé deux fois (email client + email admin) avec les bons paramètres (to, subject, attachment filename)
 - Test de régression : si `sendMail` throw, l'endpoint retourne quand même `{ file_id }` avec status 200
 
 ---
@@ -132,4 +159,3 @@ return res.json({ file_id: fileData.data.id });
 - Template HTML pour le corps de l'email (texte plain suffisant)
 - Gestion des bounces / erreurs de livraison
 - Retry automatique en cas d'échec SMTP
-- Email de confirmation côté admin
