@@ -3,6 +3,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 COPY src/ ./src/
+COPY templates/ ./templates/
 RUN chown -R node:node /app
 USER node
 EXPOSE 3001

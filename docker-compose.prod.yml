@@ -39,6 +39,7 @@ services:
     build: ./template-renderer
     environment:
       - RENDERER_API_KEY=${RENDERER_API_KEY}
+      - SERVICE_URL=http://template-renderer:3001
     volumes:
       - ./template-renderer/templates:/app/templates
     restart: unless-stopped
