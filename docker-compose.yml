@@ -30,6 +30,9 @@ services:
     environment:
       - RENDERER_API_KEY=${RENDERER_API_KEY}
       - SERVICE_URL=http://template-renderer:3001
+      - GOTENBERG_URL=http://gotenberg:3000
+      - DIRECTUS_URL=http://directus:8055
+      - DIRECTUS_TOKEN=${DIRECTUS_TOKEN}
     volumes:
       - ./template-renderer/templates:/app/templates
     restart: unless-stopped
