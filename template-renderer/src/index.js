@@ -28,7 +28,7 @@ const ADMIN_EMAIL = 'contact@fiestalok.fr';
 const transporter = nodemailer.createTransport({
   host: SMTP_HOST,
   port: SMTP_PORT,
-  secure: true,
+  secure: SMTP_PORT === 465,
   auth: {
     user: SMTP_USER,
     pass: SMTP_PASS,
@@ -236,7 +236,7 @@ app.post('/generate-pdf', async (req, res) => {
       to: client.email,
       subject: `Votre devis FiestaLok #${reservation.id}`,
       text: `Bonjour ${clientName},\n\nVeuillez trouver en pièce jointe votre devis FiestaLok #${reservation.id}.\n\nCordialement,\nL'équipe FiestaLok`,
-      attachments: [{ filename: `devis-${reservation.id}.pdf`, content: pdfBytes }],
+      attachments: [{ filename: `devis-${reservation.id}.pdf`, content: pdfBytes, contentType: 'application/pdf' }],
     });
   } catch (err) {
     console.error('Client email failed:', err.message);
@@ -248,7 +248,7 @@ app.post('/generate-pdf', async (req, res) => {
       to: ADMIN_EMAIL,
       subject: `Nouveau devis envoyé — #${reservation.id} (${clientName})`,
       text: `Un devis a été envoyé au client.\n\nRéservation #${reservation.id}\nClient : ${clientName} (${client.email}, ${client.phone})\nPériode : ${formatDate(reservation.date_start)} → ${formatDate(reservation.date_end)}\nTotal : ${reservation.total_price} €`,
-      attachments: [{ filename: `devis-${reservation.id}.pdf`, content: pdfBytes }],
+      attachments: [{ filename: `devis-${reservation.id}.pdf`, content: pdfBytes, contentType: 'application/pdf' }],
     });
   } catch (err) {
     console.error('Admin email failed:', err.message);
