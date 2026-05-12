@@ -1,2 +1,3 @@
 .env
 uploads/
+template-renderer/node_modules/*
