@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; color: #333; padding: 0 20px; }
+    h1 { color: #e53935; border-bottom: 2px solid #e53935; padding-bottom: 10px; }
+    h2 { color: #555; margin-top: 30px; }
+    .info-block { background: #f9f9f9; border-left: 4px solid #e53935; padding: 12px 16px; margin: 10px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th { background: #f0f0f0; padding: 10px; text-align: left; border: 1px solid #ddd; }
+    td { padding: 10px; border: 1px solid #ddd; }
+    .total { font-size: 1.2em; font-weight: bold; text-align: right; margin-top: 20px; padding: 10px; background: #f9f9f9; }
+    .footer { margin-top: 50px; font-size: 0.8em; color: #999; text-align: center; border-top: 1px solid #eee; padding-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Devis — Réservation #{{id}}</h1>
+
+  <h2>Client</h2>
+  <div class="info-block">
+    <strong>{{client_name}}</strong><br>
+    Email : {{client_email}}<br>
+    Téléphone : {{client_phone}}
+  </div>
+
+  <h2>Dates</h2>
+  <div class="info-block">
+    Du <strong>{{date_start}}</strong> au <strong>{{date_end}}</strong>
+  </div>
+
+  <h2>Articles</h2>
+  <table>
+    <tr>
+      <th>Article</th>
+      <th>Quantité</th>
+      <th>Prix unitaire</th>
+    </tr>
+    {{#each articles}}
+    <tr>
+      <td>{{name}}</td>
+      <td>{{quantity}}</td>
+      <td>{{unit_price}} €</td>
+    </tr>
+    {{/each}}
+  </table>
+
+  <div class="total">Total : {{total_price}} €</div>
+
+  {{#if notes}}
+  <h2>Notes</h2>
+  <div class="info-block">{{notes}}</div>
+  {{/if}}
+
+  <div class="footer">FiestaLok — contact@fiestalok.fr — fiestalok.fr</div>
+</body>
+</html>

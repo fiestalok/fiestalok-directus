@@ -1,10 +1,22 @@
 services:
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - directus
+
   directus:
     image: directus/directus:latest
+    restart: unless-stopped
     env_file:
       - .env
-    ports:
-      - "8055:8055"
     environment:
       SECRET: "latronspem-fiestalok"
       DB_CLIENT: "sqlite3"
@@ -22,8 +34,6 @@ services:
   gotenberg:
     image: gotenberg/gotenberg:8
     restart: unless-stopped
-    ports:
-      - "3000:3000"
 
   template-renderer:
     build: ./template-renderer
@@ -38,7 +48,10 @@ services:
       - SMTP_USER=${SMTP_USER}
       - SMTP_PASS=${SMTP_PASS}
       - SMTP_FROM=${SMTP_FROM}
-      - MAIL_REDIRECT_TO=${MAIL_REDIRECT_TO}
     volumes:
       - ./template-renderer/templates:/app/templates
     restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:
