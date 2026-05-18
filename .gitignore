@@ -1,3 +1,4 @@
 .env
 uploads/
 template-renderer/node_modules/*
+database/data.db

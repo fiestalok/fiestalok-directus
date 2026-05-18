@@ -1,0 +1,111 @@
+﻿{
+    "data":  [
+                 {
+                     "id":  "231c0ba7-d3fc-49c0-a98f-421a85a858db",
+                     "name":  "update status reservation",
+                     "icon":  "bigtop_updates",
+                     "color":  null,
+                     "description":  null,
+                     "status":  "active",
+                     "trigger":  "event",
+                     "accountability":  "all",
+                     "options":  {
+                                     "type":  "action",
+                                     "scope":  [
+                                                   "items.update"
+                                               ],
+                                     "collections":  [
+                                                         "reservations"
+                                                     ]
+                                 },
+                     "operation":  "38fea567-aff9-464f-8611-680326ab96e2",
+                     "date_created":  "2026-05-06T17:55:07",
+                     "user_created":  "87a66b08-2d71-4a59-a6ec-07977cd3ead2",
+                     "operations":  [
+                                        "38fea567-aff9-464f-8611-680326ab96e2",
+                                        "9bff7df8-1bbe-4d53-a1ba-f105690d3232",
+                                        "e89d5199-a615-4afd-a97a-7550e92c9c7b"
+                                    ]
+                 },
+                 {
+                     "id":  "2cfd73f3-1a58-4b14-9070-c599b6b365a4",
+                     "name":  "Nouvelle réservation",
+                     "icon":  "fiber_new",
+                     "color":  null,
+                     "description":  null,
+                     "status":  "active",
+                     "trigger":  "event",
+                     "accountability":  "all",
+                     "options":  {
+                                     "type":  "action",
+                                     "scope":  [
+                                                   "items.create"
+                                               ],
+                                     "collections":  [
+                                                         "reservations"
+                                                     ]
+                                 },
+                     "operation":  "908b0503-af67-4d39-8df6-2a78ce6edbdd",
+                     "date_created":  "2026-05-06T20:19:37",
+                     "user_created":  "87a66b08-2d71-4a59-a6ec-07977cd3ead2",
+                     "operations":  [
+                                        "4d8bfe27-2456-4104-81d6-4a9e27231d29",
+                                        "908b0503-af67-4d39-8df6-2a78ce6edbdd",
+                                        "d6a57ac6-dc84-42ad-813f-be602d2d117e"
+                                    ]
+                 },
+                 {
+                     "id":  "4f7a71d2-f363-4940-8bb7-ac8ae2b89e14",
+                     "name":  "Verify Turnstile",
+                     "icon":  "rocket_launch",
+                     "color":  null,
+                     "description":  "Vérification turnstile pour s\u0027assurer qu\u0027on est pas en train de se faire bot",
+                     "status":  "active",
+                     "trigger":  "event",
+                     "accountability":  "all",
+                     "options":  {
+                                     "type":  "filter",
+                                     "scope":  [
+                                                   "items.create"
+                                               ],
+                                     "collections":  [
+                                                         "reservations"
+                                                     ]
+                                 },
+                     "operation":  "7ac1deab-8cc0-4f99-9308-b77ddfe5d498",
+                     "date_created":  "2026-05-03T18:41:00",
+                     "user_created":  "87a66b08-2d71-4a59-a6ec-07977cd3ead2",
+                     "operations":  [
+                                        "7ac1deab-8cc0-4f99-9308-b77ddfe5d498",
+                                        "e74e19e1-8a58-443a-b73f-517726b0d3fb"
+                                    ]
+                 },
+                 {
+                     "id":  "cd4e876d-ca7e-46c2-b09d-4fb840dc944f",
+                     "name":  "generate-pdf",
+                     "icon":  "bolt",
+                     "color":  null,
+                     "description":  null,
+                     "status":  "active",
+                     "trigger":  "event",
+                     "accountability":  "all",
+                     "options":  {
+                                     "type":  "action",
+                                     "scope":  [
+                                                   "items.update"
+                                               ],
+                                     "collections":  [
+                                                         "reservations"
+                                                     ]
+                                 },
+                     "operation":  "9c435116-6530-4826-8e9a-5de3e65b771c",
+                     "date_created":  "2026-05-06T21:40:41",
+                     "user_created":  "87a66b08-2d71-4a59-a6ec-07977cd3ead2",
+                     "operations":  [
+                                        "9c435116-6530-4826-8e9a-5de3e65b771c",
+                                        "9d0c4eea-413e-44a4-89e4-6655e4c8d5ae",
+                                        "c00efc54-bf5f-4dea-b2f6-982015edd4cd"
+                                    ]
+                 }
+             ]
+}
