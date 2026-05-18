@@ -1,0 +1,52 @@
+﻿{
+    "data":  [
+                 {
+                     "id":  "4f7a71d2-f363-4940-8bb7-ac8ae2b89e14",
+                     "name":  "Verify Turnstile",
+                     "icon":  "rocket_launch",
+                     "color":  null,
+                     "description":  "Vérification turnstile pour s\u0027assurer qu\u0027on est pas en train de se faire bot",
+                     "status":  "active",
+                     "trigger":  "event",
+                     "accountability":  "all",
+                     "options":  {
+                                     "type":  "filter",
+                                     "scope":  [
+                                                   "items.create"
+                                               ],
+                                     "collections":  [
+                                                         "reservations"
+                                                     ]
+                                 },
+                     "operation":  "7ac1deab-8cc0-4f99-9308-b77ddfe5d498",
+                     "date_created":  "2026-05-03T18:41:00",
+                     "user_created":  "87a66b08-2d71-4a59-a6ec-07977cd3ead2",
+                     "operations":  [
+                                        "7ac1deab-8cc0-4f99-9308-b77ddfe5d498",
+                                        "e74e19e1-8a58-443a-b73f-517726b0d3fb"
+                                    ]
+                 },
+                 {
+                     "id":  "9aae5e1c-f701-4fce-be54-5c986b52f8ba",
+                     "name":  "test",
+                     "icon":  "bolt",
+                     "color":  null,
+                     "description":  null,
+                     "status":  "active",
+                     "trigger":  "event",
+                     "accountability":  "all",
+                     "options":  {
+                                     "type":  "action",
+                                     "scope":  [
+                                                   "items.create"
+                                               ]
+                                 },
+                     "operation":  null,
+                     "date_created":  "2026-05-18T18:52:48",
+                     "user_created":  "87a66b08-2d71-4a59-a6ec-07977cd3ead2",
+                     "operations":  [
+
+                                    ]
+                 }
+             ]
+}
