@@ -3,3 +3,4 @@ uploads/
 template-renderer/node_modules/*
 database/data.db
 node_modules/
+migration-export/
