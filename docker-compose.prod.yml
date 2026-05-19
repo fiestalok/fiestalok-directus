@@ -24,7 +24,7 @@ services:
       ADMIN_EMAIL: "contact@fiestalok.fr"
       ADMIN_PASSWORD: "fiestalok2sxb!"
       CORS_ENABLED: "true"
-      CORS_ORIGIN: "https://fiestalok.fr,http://localhost:5174"
+      CORS_ORIGIN: "https://fiestalok.fr,http://localhost:5174,https://fiestalok.github.io"
       PUBLIC_URL: "https://back.fiestalok.fr"
     volumes:
       - ./uploads:/directus/uploads
