@@ -8,9 +8,16 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_DATABASE}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
 
   caddy:
-    image: caddy:latest
+    image: caddy:2.9
     restart: unless-stopped
     ports:
       - "80:80"
@@ -21,35 +28,42 @@ services:
       - caddy_config:/config
     depends_on:
       - directus
+    networks:
+      - proxy
 
   directus:
-    image: directus/directus:latest
+    image: directus/directus:11
     restart: unless-stopped
     env_file:
       - .env
     depends_on:
       postgres:
-        condition: service_started
+        condition: service_healthy
     environment:
-      SECRET: "latronspem-fiestalok"
+      SECRET: ${DIRECTUS_SECRET}
       DB_CLIENT: "pg"
       DB_HOST: "postgres"
       DB_PORT: "5432"
       DB_DATABASE: ${DB_DATABASE}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
-      ADMIN_EMAIL: "contact@fiestalok.fr"
-      ADMIN_PASSWORD: "fiestalok2sxb!"
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       CORS_ENABLED: "true"
-      CORS_ORIGIN: "https://fiestalok.fr,http://localhost:5174,https://fiestalok.github.io"
+      CORS_ORIGIN: "https://fiestalok.fr,https://fiestalok.github.io"
       PUBLIC_URL: "https://back.fiestalok.fr"
     volumes:
       - ./uploads:/directus/uploads
       - ./extensions:/directus/extensions
+    networks:
+      - proxy
+      - backend
 
   gotenberg:
     image: gotenberg/gotenberg:8
     restart: unless-stopped
+    networks:
+      - backend
 
   template-renderer:
     build: ./template-renderer
@@ -67,6 +81,12 @@ services:
     volumes:
       - ./template-renderer/templates:/app/templates
     restart: unless-stopped
+    networks:
+      - backend
+
+networks:
+  proxy:
+  backend:
 
 volumes:
   postgres_data:
