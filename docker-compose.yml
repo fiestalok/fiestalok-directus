@@ -3,20 +3,30 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: directus
-      POSTGRES_USER: directus
-      POSTGRES_PASSWORD: directus_dev_password
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - directus
 
   directus:
     image: directus/directus:latest
+    restart: unless-stopped
     env_file:
       - .env
-    ports:
-      - "8055:8055"
     depends_on:
       postgres:
         condition: service_started
@@ -25,13 +35,13 @@ services:
       DB_CLIENT: "pg"
       DB_HOST: "postgres"
       DB_PORT: "5432"
-      DB_DATABASE: "directus"
-      DB_USER: "directus"
-      DB_PASSWORD: "directus_dev_password"
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
       ADMIN_EMAIL: "contact@fiestalok.fr"
       ADMIN_PASSWORD: "fiestalok2sxb!"
       CORS_ENABLED: "true"
-      CORS_ORIGIN: "https://fiestalok.fr,http://localhost:5174"
+      CORS_ORIGIN: "https://fiestalok.fr,http://localhost:5174,https://fiestalok.github.io"
       PUBLIC_URL: "https://back.fiestalok.fr"
     volumes:
       - ./uploads:/directus/uploads
@@ -40,8 +50,6 @@ services:
   gotenberg:
     image: gotenberg/gotenberg:8
     restart: unless-stopped
-    ports:
-      - "3000:3000"
 
   template-renderer:
     build: ./template-renderer
@@ -56,10 +64,11 @@ services:
       - SMTP_USER=${SMTP_USER}
       - SMTP_PASS=${SMTP_PASS}
       - SMTP_FROM=${SMTP_FROM}
-      - MAIL_REDIRECT_TO=${MAIL_REDIRECT_TO}
     volumes:
       - ./template-renderer/templates:/app/templates
     restart: unless-stopped
 
 volumes:
   postgres_data:
+  caddy_data:
+  caddy_config:
