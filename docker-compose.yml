@@ -52,7 +52,7 @@ services:
       RATE_LIMITER_ENABLED: "true"
       RATE_LIMITER_STORE: "memory"
       CORS_ENABLED: "true"
-      CORS_ORIGIN: "https://fiestalok.fr,https://crm.fiestalok.fr"
+      CORS_ORIGIN: "https://fiestalok.fr,https://crm.fiestalok.fr,https://fiestalok.github.io/"
       PUBLIC_URL: "https://back.fiestalok.fr"
     volumes:
       - ./uploads:/directus/uploads
