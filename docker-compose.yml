@@ -1,14 +1,33 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: directus
+      POSTGRES_USER: directus
+      POSTGRES_PASSWORD: directus_dev_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
   directus:
     image: directus/directus:latest
     env_file:
       - .env
     ports:
       - "8055:8055"
+    depends_on:
+      postgres:
+        condition: service_started
     environment:
       SECRET: "latronspem-fiestalok"
-      DB_CLIENT: "sqlite3"
-      DB_FILENAME: "/directus/database/data.db"
+      DB_CLIENT: "pg"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_DATABASE: "directus"
+      DB_USER: "directus"
+      DB_PASSWORD: "directus_dev_password"
       ADMIN_EMAIL: "contact@fiestalok.fr"
       ADMIN_PASSWORD: "fiestalok2sxb!"
       CORS_ENABLED: "true"
@@ -17,7 +36,6 @@ services:
     volumes:
       - ./uploads:/directus/uploads
       - ./extensions:/directus/extensions
-      - ./database:/directus/database
 
   gotenberg:
     image: gotenberg/gotenberg:8
@@ -42,3 +60,6 @@ services:
     volumes:
       - ./template-renderer/templates:/app/templates
     restart: unless-stopped
+
+volumes:
+  postgres_data:

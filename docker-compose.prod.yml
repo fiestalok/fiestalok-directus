@@ -1,4 +1,14 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   caddy:
     image: caddy:latest
     restart: unless-stopped
@@ -17,10 +27,17 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    depends_on:
+      postgres:
+        condition: service_started
     environment:
       SECRET: "latronspem-fiestalok"
-      DB_CLIENT: "sqlite3"
-      DB_FILENAME: "/directus/database/data.db"
+      DB_CLIENT: "pg"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
       ADMIN_EMAIL: "contact@fiestalok.fr"
       ADMIN_PASSWORD: "fiestalok2sxb!"
       CORS_ENABLED: "true"
@@ -29,7 +46,6 @@ services:
     volumes:
       - ./uploads:/directus/uploads
       - ./extensions:/directus/extensions
-      - ./database:/directus/database
 
   gotenberg:
     image: gotenberg/gotenberg:8
@@ -53,5 +69,6 @@ services:
     restart: unless-stopped
 
 volumes:
+  postgres_data:
   caddy_data:
   caddy_config:
