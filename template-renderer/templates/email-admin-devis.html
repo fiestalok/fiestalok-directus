@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; color: #333; background: #f9f9f9; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 8px; padding: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .logo { font-size: 24px; font-weight: bold; color: #e63946; margin-bottom: 32px; }
+    h1 { font-size: 20px; color: #111; margin-bottom: 16px; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    td { padding: 8px 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+    td:first-child { color: #666; width: 140px; }
+    .footer { margin-top: 40px; font-size: 13px; color: #999; border-top: 1px solid #eee; padding-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">FiestaLok</div>
+    <h1>Nouveau devis envoyé — #{{reservationId}}</h1>
+    <p>Un devis a été envoyé au client.</p>
+    <table>
+      <tr><td>Réservation</td><td>#{{reservationId}}</td></tr>
+      <tr><td>Client</td><td>{{clientName}}</td></tr>
+      <tr><td>Email</td><td>{{clientEmail}}</td></tr>
+      <tr><td>Téléphone</td><td>{{clientPhone}}</td></tr>
+      <tr><td>Période</td><td>{{dateStart}} → {{dateEnd}}</td></tr>
+      <tr><td>Total</td><td>{{totalPrice}} €</td></tr>
+    </table>
+    <div style="margin-top: 40px;">{{> signature}}</div>
+  </div>
+</body>
+</html>

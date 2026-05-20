@@ -9,6 +9,11 @@ const nodemailer = require('nodemailer');
 const app = express();
 app.use(express.json());
 
+Handlebars.registerPartial(
+  'signature',
+  fs.readFileSync(path.join(__dirname, '..', 'templates', 'partials', 'signature.html'), 'utf-8')
+);
+
 const API_KEY = process.env.RENDERER_API_KEY;
 const TEMPLATES_DIR = process.env.TEMPLATES_DIR || path.join(__dirname, '..', 'templates');
 const TOKEN_TTL_MS = 5 * 60 * 1000;
@@ -246,19 +251,36 @@ app.post('/generate-pdf', async (req, res) => {
 
   const clientName = `${client.first_name} ${client.last_name}`;
 
+  const emailClientPath = path.resolve(TEMPLATES_DIR, 'email-client-devis.html');
+  const emailAdminPath = path.resolve(TEMPLATES_DIR, 'email-admin-devis.html');
+
+  const emailClientHtml = Handlebars.compile(fs.readFileSync(emailClientPath, 'utf-8'))({
+    reservationId: reservation.id,
+    clientName,
+  });
+  const emailAdminHtml = Handlebars.compile(fs.readFileSync(emailAdminPath, 'utf-8'))({
+    reservationId: reservation.id,
+    clientName,
+    clientEmail: client.email,
+    clientPhone: client.phone,
+    dateStart: formatDate(reservation.date_start),
+    dateEnd: formatDate(reservation.date_end),
+    totalPrice: reservation.total_price,
+  });
+
   const [clientResult, adminResult] = await Promise.allSettled([
     mailer.sendMail({
       from: SMTP_FROM,
       to: client.email,
       subject: `Votre devis FiestaLok #${reservation.id}`,
-      text: `Bonjour ${clientName},\n\nVeuillez trouver en pièce jointe votre devis FiestaLok #${reservation.id}.\n\nCordialement,\nL'équipe FiestaLok`,
+      html: emailClientHtml,
       attachments: [{ filename: `devis-${reservation.id}.pdf`, content: pdfBytes, contentType: 'application/pdf' }],
     }),
     mailer.sendMail({
       from: SMTP_FROM,
       to: ADMIN_EMAIL,
       subject: `Nouveau devis envoyé — #${reservation.id} (${clientName})`,
-      text: `Un devis a été envoyé au client.\n\nRéservation #${reservation.id}\nClient : ${clientName} (${client.email}, ${client.phone})\nPériode : ${formatDate(reservation.date_start)} → ${formatDate(reservation.date_end)}\nTotal : ${reservation.total_price} €`,
+      html: emailAdminHtml,
       attachments: [{ filename: `devis-${reservation.id}.pdf`, content: pdfBytes, contentType: 'application/pdf' }],
     }),
   ]);

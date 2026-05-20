@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; color: #333; background: #f9f9f9; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 8px; padding: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .logo { font-size: 24px; font-weight: bold; color: #e63946; margin-bottom: 32px; }
+    h1 { font-size: 20px; color: #111; margin-bottom: 16px; }
+    p { line-height: 1.6; margin-bottom: 12px; }
+    .footer { margin-top: 40px; font-size: 13px; color: #999; border-top: 1px solid #eee; padding-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">FiestaLok</div>
+    <h1>Votre devis #{{reservationId}}</h1>
+    <p>Bonjour {{clientName}},</p>
+    <p>Veuillez trouver en pièce jointe votre devis FiestaLok <strong>#{{reservationId}}</strong>.</p>
+    <p>N'hésitez pas à nous contacter pour toute question.</p>
+    <p>Cordialement,<br><strong>L'équipe FiestaLok</strong></p>
+    <div style="margin-top: 40px;">{{> signature}}</div>
+  </div>
+</body>
+</html>
